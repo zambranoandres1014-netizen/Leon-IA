@@ -68,36 +68,49 @@
 
 <body>
 
-<header>🦁 León IA</header>
+<h2>🦁 León IA</h2>
 
-<div id="chat">
-  <div class="msg bot">Hola, soy León IA. Di “ok León” o escribe.</div>
-</div>
+<div id="chat"></div>
 
-<footer>
-  <input id="text" placeholder="Escribe aquí...">
-  <button onclick="send()">Enviar</button>
-</footer>
+<input id="texto" placeholder="Escribe aquí..." />
+<button onclick="enviar()">Enviar</button>
 
 <script>
-function send(){
-  const input = document.getElementById("text");
-  if(input.value.trim()==="") return;
+function responder(texto) {
+  texto = texto.toLowerCase();
 
+  if (texto.includes("hola")) {
+    return "Hola 👋 ¿en qué puedo ayudarte?";
+  }
+
+  if (texto.includes("como estas")) {
+    return "Estoy muy bien 😊 ¿y tú?";
+  }
+
+  if (texto.includes("quien eres")) {
+    return "Soy León IA 🦁, tu asistente inteligente.";
+  }
+
+  if (texto.includes("ayuda")) {
+    return "Claro, dime qué necesitas y te ayudo.";
+  }
+
+  return "No entendí eso 🤔, intenta decirlo de otra forma.";
+}
+
+function enviar() {
+  const input = document.getElementById("texto");
   const chat = document.getElementById("chat");
+  const mensaje = input.value;
 
-  const user = document.createElement("div");
-  user.className="msg user";
-  user.textContent=input.value;
-  chat.appendChild(user);
+  if (mensaje.trim() === "") return;
 
-  const bot = document.createElement("div");
-  bot.className="msg bot";
-  bot.textContent="Entendido: " + input.value;
-  chat.appendChild(bot);
+  chat.innerHTML += `<div class="user">Tú: ${mensaje}</div>`;
 
-  input.value="";
-  chat.scrollTop = chat.scrollHeight;
+  const respuesta = responder(mensaje);
+  chat.innerHTML += `<div class="bot">León IA: ${respuesta}</div>`;
+
+  input.value = "";
 }
 </script>
 
