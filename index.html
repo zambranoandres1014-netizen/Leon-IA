@@ -76,41 +76,36 @@
 <button onclick="enviar()">Enviar</button>
 
 <script>
-function responder(texto) {
-  texto = texto.toLowerCase();
-
-  if (texto.includes("hola")) {
-    return "Hola 👋 ¿en qué puedo ayudarte?";
-  }
-
-  if (texto.includes("como estas")) {
-    return "Estoy muy bien 😊 ¿y tú?";
-  }
-
-  if (texto.includes("quien eres")) {
-    return "Soy León IA 🦁, tu asistente inteligente.";
-  }
-
-  if (texto.includes("ayuda")) {
-    return "Claro, dime qué necesitas y te ayudo.";
-  }
-
-  return "No entendí eso 🤔, intenta decirlo de otra forma.";
-}
-
-function enviar() {
+async function enviar() {
   const input = document.getElementById("texto");
   const chat = document.getElementById("chat");
-  const mensaje = input.value;
+  const mensaje = input.value.trim();
 
-  if (mensaje.trim() === "") return;
+  if (!mensaje) return;
 
   chat.innerHTML += `<div class="user">Tú: ${mensaje}</div>`;
-
-  const respuesta = responder(mensaje);
-  chat.innerHTML += `<div class="bot">León IA: ${respuesta}</div>`;
-
   input.value = "";
+
+  const botMsg = document.createElement("div");
+  botMsg.className = "bot";
+  botMsg.innerText = "🦁 León IA está pensando...";
+  chat.appendChild(botMsg);
+  chat.scrollTop = chat.scrollHeight;
+
+  try {
+    const res = await fetch("/api", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mensaje })
+    });
+
+    const data = await res.json();
+    botMsg.innerText = "León IA: " + data.respuesta;
+  } catch (e) {
+    botMsg.innerText = "❌ Error al conectar con la IA.";
+  }
+
+  chat.scrollTop = chat.scrollHeight;
 }
 </script>
 
